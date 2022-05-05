@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { PublicRoute } from 'src/common/decorators/auth';
-import { CatDto } from './cat.dto';
+import { CatDto } from './dto/create-cat';
 import { Cat } from './cat.entity';
 import { CatsService } from './cat.service';
 

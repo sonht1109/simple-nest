@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EnumCatGender } from 'src/common/enum/cat.gender';
 import { AppError } from 'src/common/exceptions/app-error';
 import { DeleteResult } from 'typeorm';
-import { CatDto } from './cat.dto';
+import { CatDto } from './dto/create-cat';
 import { Cat } from './cat.entity';
 import { CatRepository } from './cat.repository';
 
@@ -23,7 +23,10 @@ export class CatsService {
   }
 
   async create(catDto: CatDto): Promise<Cat> {
-    if (!Object.values(EnumCatGender).includes(catDto.gender)) {
+    if (
+      catDto.gender &&
+      !Object.values(EnumCatGender).includes(catDto.gender)
+    ) {
       throw new AppError('Invalid gender');
     }
     return this.catRepo.save(catDto);
@@ -40,10 +43,10 @@ export class CatsService {
     if (!currentCat) {
       throw new AppError('NOT FOUND CAT');
     }
-    if (!Object.values(EnumCatGender).includes(cat.gender)) {
+    if (cat.gender && !Object.values(EnumCatGender).includes(cat.gender)) {
       throw new AppError('Invalid gender');
     }
-    return this.catRepo.save(cat);
+    return this.catRepo.save({ ...currentCat, ...cat });
   }
 
   catCrossMethod() {
