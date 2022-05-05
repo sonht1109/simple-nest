@@ -1,6 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { PublicRoute } from 'src/common/decorators/auth';
 import { CatDto } from './cat.dto';
+import { Cat } from './cat.entity';
 import { CatsService } from './cat.service';
 
 @Controller('cats')
@@ -14,8 +23,8 @@ export class CatsController {
   }
 
   @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.catsService.findById(id);
+  findOne(@Param('id') id: string) {
+    return this.catsService.findOne(id);
   }
 
   @Post()
@@ -26,5 +35,10 @@ export class CatsController {
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.catsService.delete(id);
+  }
+
+  @Put()
+  update(@Body() cat: Cat) {
+    return this.catsService.update(cat);
   }
 }
