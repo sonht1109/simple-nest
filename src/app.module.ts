@@ -7,6 +7,7 @@ import { AuthGuard } from './common/guard/auth.guard';
 import { ormConfig } from './orm.config';
 import { UserModule } from './user/user.module';
 import { FoodModule } from './food/food.module';
+import { AuthModule } from './auth/auth.module';
 
 export const AUTH_GUARD = 'AUTH_GUARD';
 
@@ -16,6 +17,7 @@ export const AUTH_GUARD = 'AUTH_GUARD';
     CatModule,
     UserModule,
     FoodModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: AUTH_GUARD, useClass: AuthGuard }],

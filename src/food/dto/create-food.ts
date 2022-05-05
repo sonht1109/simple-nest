@@ -1,4 +1,4 @@
 export class CreateFoodDto {
-  readonly name: string;
-  readonly minAge: number;
+  name: string;
+  minAge: number;
 }
