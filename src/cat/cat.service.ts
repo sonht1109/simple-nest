@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  Scope,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EnumCatGender } from 'src/common/enum/cat.gender';
@@ -13,11 +14,15 @@ import { CatDto } from './dto/create-cat';
 import { Cat } from './cat.entity';
 import { CatRepository } from './cat.repository';
 import { UserService } from 'src/user/user.service';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class CatsService {
   constructor(
     @InjectRepository(Cat) private readonly catRepo: CatRepository,
+    @Inject(REQUEST)
+    private readonly request: Request,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
@@ -33,7 +38,7 @@ export class CatsService {
     return await this.catRepo.findOneBy({ id: +id });
   }
 
-  async create(catDto: CatDto, ownerId: string): Promise<Cat> {
+  async create(catDto: CatDto): Promise<Cat> {
     if (
       catDto.gender &&
       !Object.values(EnumCatGender).includes(catDto.gender)
@@ -41,12 +46,13 @@ export class CatsService {
       throw new AppError('Invalid gender');
     }
 
-    const owner = await this.userService.findOne(ownerId);
+    const id = this.request?.headers?.['authorization'].split(' ')[1];
+    const owner = await this.userService.findOne(id);
     if (owner) {
       const newCat = await this.catRepo.create({ ...catDto, owner });
       return this.catRepo.save(newCat);
     }
-    throw new AppError('Invalid token');
+    throw new AppError('Invalid user');
   }
 
   async delete(id: string): Promise<DeleteResult> {

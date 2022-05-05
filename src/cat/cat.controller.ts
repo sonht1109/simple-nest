@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Req,
 } from '@nestjs/common';
 import { PublicRoute } from 'src/common/decorators/auth';
 import { CatDto } from './dto/create-cat';
@@ -29,9 +28,8 @@ export class CatsController {
   }
 
   @Post()
-  create(@Body() catDto: CatDto, @Req() req) {
-    const id = req?.headers?.['authorization'].split(' ')[1];
-    return this.catsService.create(catDto, id);
+  create(@Body() catDto: CatDto) {
+    return this.catsService.create(catDto);
   }
 
   @Delete(':id')

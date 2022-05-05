@@ -16,7 +16,7 @@ export class Cat {
   })
   gender: EnumCatGender;
 
-  @Column('int', { unsigned: true, default: 0 })
+  @Column('float', { unsigned: true, default: 0 })
   age: number;
 
   @ManyToOne(() => User, (owner: User) => owner.cats)
