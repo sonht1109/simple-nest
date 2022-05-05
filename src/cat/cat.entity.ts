@@ -1,5 +1,6 @@
 import { EnumCatGender } from 'src/common/enum/cat.gender';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { User } from 'src/user/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity('cat')
 export class Cat {
@@ -17,4 +18,7 @@ export class Cat {
 
   @Column('int', { unsigned: true, default: 0 })
   age: number;
+
+  @ManyToOne(() => User, (owner: User) => owner.cats)
+  owner: User;
 }
