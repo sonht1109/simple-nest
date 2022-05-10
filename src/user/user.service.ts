@@ -12,7 +12,7 @@ export class UserService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userRepo.find();
+    return this.userRepo.find({ relations: ['cats'] });
   }
 
   async create(dto: CreateUserDto): Promise<User> {
@@ -23,7 +23,7 @@ export class UserService {
     if (isNaN(+id)) {
       throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
     }
-    return this.userRepo.findOneBy({ id: +id });
+    return this.userRepo.findOne({ where: { id: +id }, relations: ['cats'] });
   }
 
   async update(user: User): Promise<User> {

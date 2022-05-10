@@ -15,11 +15,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(accountDto: CreateAccountDto): Promise<string> {
+  async register(accountDto: CreateAccountDto): Promise<CreateAccountDto> {
     try {
-      accountDto.password = await this.hashPassword(accountDto.password);
-      await this.authRepo.save(accountDto);
-      return 'Register successfully';
+      const hashPassword = await this.hashPassword(accountDto.password);
+      await this.authRepo.save({ ...accountDto, password: hashPassword });
+      return accountDto;
     } catch (err) {
       throw new AppError('Register fail', err);
     }
@@ -38,7 +38,7 @@ export class AuthService {
   async authentication(username: string, password: string) {
     const account = await this.findOne(username);
     if (account) {
-      if (this.comparePassword(password, account.password)) {
+      if (await this.comparePassword(password, account.password)) {
         return account;
       }
     }

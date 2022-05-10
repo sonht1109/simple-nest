@@ -35,7 +35,10 @@ export class CatsService {
     if (isNaN(+id)) {
       throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
     }
-    return await this.catRepo.findOneBy({ id: +id });
+    return await this.catRepo.findOne({
+      where: { id: +id },
+      relations: ['users'],
+    });
   }
 
   async create(catDto: CatDto): Promise<Cat> {
