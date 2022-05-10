@@ -6,7 +6,6 @@ import { AuthRepository } from './auth.repository';
 import { CreateAccountDto } from './dto/create-account';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { LoginAccountDto } from './dto/login-account';
 
 @Injectable()
 export class AuthService {
@@ -19,18 +18,6 @@ export class AuthService {
     const hashPassword = await this.hashPassword(accountDto.password);
     await this.authRepo.save({ ...accountDto, password: hashPassword });
     return accountDto;
-  }
-
-  async login(loginDto: LoginAccountDto) {
-    const account = await this.authentication(
-      loginDto.username,
-      loginDto.password,
-    );
-    if (account) {
-      return await this.generateToken(account);
-    }
-
-    throw new AppError('Invalid account');
   }
 
   async authentication(username: string, password: string) {
@@ -46,7 +33,6 @@ export class AuthService {
   async generateToken(payload: Account) {
     return this.jwtService.sign({
       id: payload.id,
-      username: payload.username,
     });
   }
 
@@ -62,6 +48,6 @@ export class AuthService {
   }
 
   async findOne(username: string): Promise<Account> {
-    return await this.authRepo.findOneBy({ username });
+    return await this.authRepo.findOne({ where: { username } });
   }
 }
