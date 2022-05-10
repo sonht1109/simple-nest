@@ -6,6 +6,7 @@ import { AuthRepository } from './auth.repository';
 import { CreateAccountDto } from './dto/create-account';
 import bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { LoginAccountDto } from './dto/login-account';
 
 @Injectable()
 export class AuthService {
@@ -24,14 +25,23 @@ export class AuthService {
     }
   }
 
-  async login(accountDto: CreateAccountDto) {
-    const account = await this.findOne(accountDto.username);
+  async login(loginDto: LoginAccountDto) {
+    const account = await this.authentication(
+      loginDto.username,
+      loginDto.password,
+    );
     if (account) {
-      if (this.comparePassword(accountDto.password, account.password)) {
-        return await this.generateToken(account);
+      return await this.generateToken(account);
+    }
+  }
+
+  async authentication(username: string, password: string) {
+    const account = await this.findOne(username);
+    if (account) {
+      if (this.comparePassword(password, account.password)) {
+        return account;
       }
     }
-
     throw new AppError('Invalid account');
   }
 
