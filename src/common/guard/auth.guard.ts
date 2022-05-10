@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
 import { AuthRepository } from 'src/auth/auth.repository';
+import { SECRET_KEY } from 'src/config/orm.config';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -22,7 +23,7 @@ export class AuthenticationGuard implements CanActivate {
       const token = req?.headers?.['authorization'].split(' ')[1];
       if (!token) return false;
 
-      const payload: any = jwt.verify(token, 'SECRET_KEY');
+      const payload: any = jwt.verify(token, SECRET_KEY);
       const account = this.authRepo.findOne({
         where: { username: payload.username, id: payload.id },
       });

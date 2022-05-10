@@ -4,7 +4,7 @@ import { AppError } from 'src/common/exceptions/app-error';
 import { Account } from './account.entity';
 import { AuthRepository } from './auth.repository';
 import { CreateAccountDto } from './dto/create-account';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginAccountDto } from './dto/login-account';
 
@@ -16,13 +16,9 @@ export class AuthService {
   ) {}
 
   async register(accountDto: CreateAccountDto): Promise<CreateAccountDto> {
-    try {
-      const hashPassword = await this.hashPassword(accountDto.password);
-      await this.authRepo.save({ ...accountDto, password: hashPassword });
-      return accountDto;
-    } catch (err) {
-      throw new Error('Error in register');
-    }
+    const hashPassword = await this.hashPassword(accountDto.password);
+    await this.authRepo.save({ ...accountDto, password: hashPassword });
+    return accountDto;
   }
 
   async login(loginDto: LoginAccountDto) {
@@ -33,6 +29,8 @@ export class AuthService {
     if (account) {
       return await this.generateToken(account);
     }
+
+    throw new AppError('Invalid account');
   }
 
   async authentication(username: string, password: string) {
@@ -46,10 +44,13 @@ export class AuthService {
   }
 
   async generateToken(payload: Account) {
-    return await this.jwtService.sign(payload);
+    return this.jwtService.sign({
+      id: payload.id,
+      username: payload.username,
+    });
   }
 
-  async hashPassword(password: string): Promise<string> {
+  async hashPassword(password: string): Promise<any> {
     return await bcrypt.hash(password, 12);
   }
 

@@ -11,7 +11,7 @@ import {
 import { CatDto } from './dto/create-cat';
 import { Cat } from './cat.entity';
 import { CatsService } from './cat.service';
-import { AuthenticationGuard } from 'src/common/guard/auth.guard';
+import { JwtStrategy } from 'src/auth/strategy/jwt.strategy';
 
 @Controller('cats')
 export class CatsController {
@@ -28,19 +28,19 @@ export class CatsController {
   }
 
   @Post()
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(JwtStrategy)
   create(@Body() catDto: CatDto) {
     return this.catsService.create(catDto);
   }
 
   @Delete(':id')
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(JwtStrategy)
   delete(@Param('id') id: string) {
     return this.catsService.delete(id);
   }
 
   @Put()
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(JwtStrategy)
   update(@Body() cat: Cat) {
     return this.catsService.update(cat);
   }

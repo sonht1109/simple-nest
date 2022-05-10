@@ -7,7 +7,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { AuthenticationGuard } from 'src/common/guard/auth.guard';
+import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -27,13 +27,13 @@ export class UserController {
   }
 
   @Post()
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(JwtAuthGuard)
   create(@Body() user: CreateUserDto) {
     return this.userService.create(user);
   }
 
   @Put()
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(JwtAuthGuard)
   update(@Body() user: User) {
     return this.userService.update(user);
   }

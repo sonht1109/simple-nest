@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { PublicRoute } from 'src/common/decorators/auth';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { CreateFoodDto } from './dto/create-food';
 import { FoodService } from './food.service';
 
@@ -8,19 +8,17 @@ export class FoodController {
   constructor(private readonly foodService: FoodService) {}
 
   @Get()
-  @PublicRoute()
   findAll() {
     return this.foodService.findAll();
   }
 
   @Get(':id')
-  @PublicRoute()
   findOne(@Param('id') id: string) {
     return this.foodService.findOne(id);
   }
 
   @Post()
-  @PublicRoute()
+  @UseGuards(JwtAuthGuard)
   create(@Body() foodDto: CreateFoodDto) {
     return this.foodService.create(foodDto);
   }
