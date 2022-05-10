@@ -21,7 +21,7 @@ export class AuthService {
       await this.authRepo.save({ ...accountDto, password: hashPassword });
       return accountDto;
     } catch (err) {
-      throw new AppError('Register fail', err);
+      throw new Error('Error in register');
     }
   }
 

@@ -12,7 +12,7 @@ import { LocalStrategy } from './strategy/local.strategy';
   imports: [
     TypeOrmModule.forFeature([Account]),
     PassportModule,
-    JwtModule.register({ privateKey: 'SECRET_KEY' }),
+    JwtModule.register({}),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],

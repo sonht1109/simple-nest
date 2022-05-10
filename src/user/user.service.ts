@@ -12,7 +12,7 @@ export class UserService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userRepo.find({ relations: ['cats'] });
+    return this.userRepo.find();
   }
 
   async create(dto: CreateUserDto): Promise<User> {

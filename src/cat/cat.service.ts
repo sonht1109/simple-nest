@@ -37,7 +37,7 @@ export class CatsService {
     }
     return await this.catRepo.findOne({
       where: { id: +id },
-      relations: ['users'],
+      relations: ['owner'],
     });
   }
 
