@@ -1,5 +1,4 @@
 import {
-  forwardRef,
   HttpException,
   HttpStatus,
   Inject,
@@ -13,9 +12,10 @@ import { DeleteResult } from 'typeorm';
 import { CatDto } from './dto/create-cat';
 import { Cat } from './cat.entity';
 import { CatRepository } from './cat.repository';
-import { UserService } from 'src/user/user.service';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { Account } from 'src/auth/account.entity';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CatsService {
@@ -23,8 +23,7 @@ export class CatsService {
     @InjectRepository(Cat) private readonly catRepo: CatRepository,
     @Inject(REQUEST)
     private readonly request: Request,
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService,
+    private readonly authService: AuthService,
   ) {}
 
   async findAll() {
@@ -49,11 +48,15 @@ export class CatsService {
       throw new AppError('Invalid gender');
     }
 
-    // const owner = await this.userService.findOne(id);
-    // if (owner) {
-    // const newCat = await this.catRepo.create({ ...catDto, owner });
-    // return await this.catRepo.save(newCat);
-    // }
+    const currentUser = this.request.user as Account;
+
+    if (currentUser) {
+      const owner = await this.authService.findOneById(currentUser.id);
+      if (owner) {
+        const newCat = await this.catRepo.create({ ...catDto, owner });
+        return await this.catRepo.save(newCat);
+      }
+    }
     throw new AppError('Invalid user');
   }
 

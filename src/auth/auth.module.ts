@@ -18,6 +18,6 @@ import { Account } from './account.entity';
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, AuthService, JwtModule],
 })
 export class AuthModule {}

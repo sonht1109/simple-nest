@@ -1,5 +1,5 @@
+import { Account } from 'src/auth/account.entity';
 import { EnumCatGender } from 'src/common/enum/cat.gender';
-import { User } from 'src/user/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity('cat')
@@ -19,6 +19,6 @@ export class Cat {
   @Column('float', { unsigned: true, default: 0 })
   age: number;
 
-  @ManyToOne(() => User, (owner: User) => owner.cats)
-  owner: User;
+  @ManyToOne(() => Account, (owner: Account) => owner.cats)
+  owner: Account;
 }

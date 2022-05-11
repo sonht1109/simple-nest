@@ -15,8 +15,6 @@ import { Roles } from 'src/common/decorators/role';
 import { EnumRole } from 'src/common/enum/role.enum';
 import { RolesGuard } from 'src/common/guard/role.guard';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
-import { CurrentAccount } from 'src/common/decorators/current-user';
-import { Account } from 'src/auth/account.entity';
 
 @Controller('cats')
 export class CatsController {
@@ -34,23 +32,22 @@ export class CatsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(EnumRole.ADMIN)
+  @Roles(EnumRole.USER, EnumRole.ADMIN)
   async create(@Body() catDto: CatDto) {
     return await this.catsService.create(catDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(EnumRole.ADMIN)
+  @Roles(EnumRole.ADMIN, EnumRole.USER)
   async delete(@Param('id') id: string) {
     return await this.catsService.delete(id);
   }
 
   @Put()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(EnumRole.ADMIN)
-  async update(@Body() cat: Cat, @CurrentAccount() account: Account) {
-    console.log(account);
+  @Roles(EnumRole.ADMIN, EnumRole.USER)
+  async update(@Body() cat: Cat) {
     return await this.catsService.update(cat);
   }
 }
