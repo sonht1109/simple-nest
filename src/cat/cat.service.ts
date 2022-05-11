@@ -49,12 +49,11 @@ export class CatsService {
       throw new AppError('Invalid gender');
     }
 
-    const id = this.request?.headers?.['authorization'].split(' ')[1];
-    const owner = await this.userService.findOne(id);
-    if (owner) {
-      const newCat = await this.catRepo.create({ ...catDto, owner });
-      return this.catRepo.save(newCat);
-    }
+    // const owner = await this.userService.findOne(id);
+    // if (owner) {
+    // const newCat = await this.catRepo.create({ ...catDto, owner });
+    // return await this.catRepo.save(newCat);
+    // }
     throw new AppError('Invalid user');
   }
 
@@ -64,6 +63,7 @@ export class CatsService {
     }
     return this.catRepo.delete({ id: +id });
   }
+
   async update(cat: Cat): Promise<Cat> {
     const currentCat = await this.findOne(cat.id);
     if (!currentCat) {

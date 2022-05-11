@@ -21,16 +21,16 @@ export class UserService {
 
   async findOne(id: string | number): Promise<User> {
     if (isNaN(+id)) {
-      throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Invalid user id', HttpStatus.BAD_REQUEST);
     }
     return this.userRepo.findOne({ where: { id: +id }, relations: ['cats'] });
   }
 
   async update(user: User): Promise<User> {
-    const currentUser = await this.findOne(user.id);
-    if (!currentUser) {
+    const CurrentAccount = await this.findOne(user.id);
+    if (!CurrentAccount) {
       throw new AppError('Invalid user');
     }
-    return this.userRepo.save({ ...currentUser, ...user });
+    return this.userRepo.save({ ...CurrentAccount, ...user });
   }
 }

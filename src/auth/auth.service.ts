@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppError } from 'src/common/exceptions/app-error';
 import { Account } from './account.entity';
-import { AuthRepository } from './auth.repository';
+import { AccountRepository } from './account.repository';
 import { CreateAccountDto } from './dto/create-account';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -10,13 +10,13 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Account) private readonly authRepo: AuthRepository,
+    private readonly accountRepo: AccountRepository,
     private jwtService: JwtService,
   ) {}
 
   async register(accountDto: CreateAccountDto): Promise<CreateAccountDto> {
     const hashPassword = await this.hashPassword(accountDto.password);
-    await this.authRepo.save({ ...accountDto, password: hashPassword });
+    await this.accountRepo.save({ ...accountDto, password: hashPassword });
     return accountDto;
   }
 
@@ -48,6 +48,6 @@ export class AuthService {
   }
 
   async findOne(username: string): Promise<Account> {
-    return await this.authRepo.findOne({ where: { username } });
+    return await this.accountRepo.findOne({ where: { username } });
   }
 }
