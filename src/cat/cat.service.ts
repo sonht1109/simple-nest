@@ -75,10 +75,14 @@ export class CatsService {
     if (cat.gender && !Object.values(EnumCatGender).includes(cat.gender)) {
       throw new AppError('Invalid gender');
     }
-    return this.catRepo.save({ ...currentCat, ...cat });
+    return await this.catRepo.save({ ...currentCat, ...cat });
   }
 
-  catCrossMethod() {
-    return 'Cat service is injected';
+  async findByAccount(id: number) {
+    const [cats] = await this.catRepo
+      .createQueryBuilder('c')
+      .where('c.ownerId = :id', { id })
+      .getManyAndCount();
+    return cats;
   }
 }

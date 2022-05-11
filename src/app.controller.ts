@@ -8,9 +8,4 @@ export class AppController {
     private readonly appService: AppService,
     @Inject(forwardRef(() => CatsService)) private catsServices: CatsService,
   ) {}
-
-  @Get()
-  get(): string {
-    return this.catsServices.catCrossMethod();
-  }
 }

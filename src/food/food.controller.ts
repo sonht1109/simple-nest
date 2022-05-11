@@ -1,5 +1,8 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Roles } from 'src/common/decorators/role';
+import { EnumRole } from 'src/common/enum/role.enum';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guard/role.guard';
 import { CreateFoodDto } from './dto/create-food';
 import { FoodService } from './food.service';
 
@@ -18,8 +21,14 @@ export class FoodController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(EnumRole.ADMIN)
   create(@Body() foodDto: CreateFoodDto) {
     return this.foodService.create(foodDto);
+  }
+
+  @Get('by-min-age/:age')
+  findByMinAge(@Param('age') age: string) {
+    return this.foodService.findByMinAge(+age);
   }
 }

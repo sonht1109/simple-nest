@@ -50,4 +50,9 @@ export class CatsController {
   async update(@Body() cat: Cat) {
     return await this.catsService.update(cat);
   }
+
+  @Get('by-account/:id')
+  async findByAccount(@Param('id') id: string) {
+    return await this.catsService.findByAccount(+id);
+  }
 }

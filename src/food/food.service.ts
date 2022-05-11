@@ -24,4 +24,12 @@ export class FoodService {
   async create(foodDto: CreateFoodDto) {
     return this.foodRepo.save(foodDto);
   }
+
+  async findByMinAge(age: number) {
+    const foods = await this.foodRepo
+      .createQueryBuilder('f')
+      .where('f.minAge >= :age', { age })
+      .getMany();
+    return foods;
+  }
 }

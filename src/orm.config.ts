@@ -1,7 +1,4 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Account } from 'src/auth/account.entity';
-import { Cat } from 'src/cat/cat.entity';
-import { Food } from 'src/food/food.entity';
 
 export const ormConfig: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -10,7 +7,8 @@ export const ormConfig: TypeOrmModuleOptions = {
   username: 'sonht',
   password: 'htson2000',
   database: 'simple-nest',
-  entities: [Account, Food, Cat],
+  // entities: [Account, Food, Cat],
+  entities: ['dist/**/*.entity{.ts,.js}'],
   synchronize: true,
 };
 

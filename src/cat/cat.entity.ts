@@ -1,6 +1,14 @@
 import { Account } from 'src/auth/account.entity';
 import { EnumCatGender } from 'src/common/enum/cat.gender';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Food } from 'src/food/food.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinTable,
+  ManyToMany,
+} from 'typeorm';
 
 @Entity('cat')
 export class Cat {
@@ -21,4 +29,8 @@ export class Cat {
 
   @ManyToOne(() => Account, (owner: Account) => owner.cats)
   owner: Account;
+
+  @ManyToMany(() => Food)
+  @JoinTable({ name: 'cat_food' })
+  foods: Food[];
 }
