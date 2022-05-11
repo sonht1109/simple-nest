@@ -6,7 +6,7 @@ import { CatModule } from './cat/cat.module';
 import { UserModule } from './user/user.module';
 import { FoodModule } from './food/food.module';
 import { AuthModule } from './auth/auth.module';
-import { ormConfig } from './config/orm.config';
+import { ormConfig } from './orm.config';
 
 @Module({
   imports: [

@@ -33,21 +33,21 @@ export class CatsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(EnumRole.ADMIN)
   async create(@Body() catDto: CatDto) {
     return await this.catsService.create(catDto);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(EnumRole.ADMIN)
   async delete(@Param('id') id: string) {
     return await this.catsService.delete(id);
   }
 
   @Put()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(EnumRole.ADMIN)
   async update(@Body() cat: Cat, @CurrentAccount() account: Account) {
     console.log(account);
