@@ -15,7 +15,6 @@ import { ormConfig } from './orm.config';
     AuthModule,
   ],
   controllers: [AppController],
-  // providers: [AppService, { provide: AUTH_GUARD, useClass: AuthGuard }],
   providers: [AppService],
 })
 export class AppModule {}

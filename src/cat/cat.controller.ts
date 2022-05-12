@@ -9,12 +9,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat';
-import { Cat } from './cat.entity';
 import { CatsService } from './cat.service';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { CurrentAccount } from 'src/common/decorators/current-user';
 import { Account } from 'src/auth/account.entity';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Cat')
 @Controller('cats')
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
@@ -31,6 +32,7 @@ export class CatsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async create(
     @Body() CreateCatDto: CreateCatDto,
     @CurrentAccount() by: Account,
@@ -40,12 +42,14 @@ export class CatsController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async delete(@Param('id') id: string, @CurrentAccount() by: Account) {
     return await this.catsService.delete(id, by);
   }
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() cat: CreateCatDto,
@@ -61,6 +65,7 @@ export class CatsController {
 
   @Post('feed/:id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async feed(
     @Param('id') id: string,
     @Body() { foods }: { foods: number[] },
