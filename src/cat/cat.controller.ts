@@ -8,7 +8,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CatDto } from './dto/create-cat';
+import { CreateCatDto } from './dto/create-cat';
 import { Cat } from './cat.entity';
 import { CatsService } from './cat.service';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
@@ -31,8 +31,11 @@ export class CatsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async create(@Body() catDto: CatDto, @CurrentAccount() by: Account) {
-    return await this.catsService.create(catDto, by);
+  async create(
+    @Body() CreateCatDto: CreateCatDto,
+    @CurrentAccount() by: Account,
+  ) {
+    return await this.catsService.create(CreateCatDto, by);
   }
 
   @Delete(':id')
@@ -41,10 +44,14 @@ export class CatsController {
     return await this.catsService.delete(id, by);
   }
 
-  @Put()
+  @Put(':id')
   @UseGuards(JwtAuthGuard)
-  async update(@Body() cat: Cat, @CurrentAccount() by: Account) {
-    return await this.catsService.update(cat, by);
+  async update(
+    @Param('id') id: string,
+    @Body() cat: CreateCatDto,
+    @CurrentAccount() by: Account,
+  ) {
+    return await this.catsService.update(+id, cat, by);
   }
 
   @Get('by-account/:id')

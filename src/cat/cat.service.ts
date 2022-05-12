@@ -9,7 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { EnumCatGender } from 'src/common/enum/cat.gender';
 import { AppError } from 'src/common/exceptions/app-error';
-import { CatDto } from './dto/create-cat';
+import { CreateCatDto } from './dto/create-cat';
 import { Cat } from './cat.entity';
 import { CatRepository } from './cat.repository';
 import { Account } from 'src/auth/account.entity';
@@ -37,16 +37,16 @@ export class CatsService {
     });
   }
 
-  async create(catDto: CatDto, by: Account): Promise<Cat> {
+  async create(CreateCatDto: CreateCatDto, by: Account): Promise<Cat> {
     if (
-      catDto.gender &&
-      !Object.values(EnumCatGender).includes(catDto.gender)
+      CreateCatDto.gender &&
+      !Object.values(EnumCatGender).includes(CreateCatDto.gender)
     ) {
       throw new AppError('Invalid gender', 400);
     }
 
     if (by) {
-      const newCat = await this.catRepo.create({ ...catDto, owner: by });
+      const newCat = await this.catRepo.create({ ...CreateCatDto, owner: by });
       return await this.catRepo.save(newCat);
     }
     throw new UnauthorizedException();
@@ -69,8 +69,8 @@ export class CatsService {
     throw new UnauthorizedException();
   }
 
-  async update(cat: Cat, by: Account): Promise<Cat> {
-    const currentCat = await this.findOne(cat.id);
+  async update(id: number, cat: CreateCatDto, by: Account): Promise<Cat> {
+    const currentCat = await this.findOne(id);
     if (!currentCat) {
       throw new AppError('NOT CAT FOUND', 404);
     }
@@ -78,7 +78,7 @@ export class CatsService {
       if (cat.gender && !Object.values(EnumCatGender).includes(cat.gender)) {
         throw new AppError('Invalid gender', 400);
       }
-      return await this.catRepo.save({ ...currentCat, ...cat });
+      return await this.catRepo.save({ ...currentCat, ...cat, id });
     }
     throw new UnauthorizedException();
   }

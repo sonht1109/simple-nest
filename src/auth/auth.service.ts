@@ -16,6 +16,7 @@ export class AuthService {
 
   async register(accountDto: CreateAccountDto): Promise<CreateAccountDto> {
     const hashPassword = await this.hashPassword(accountDto.password);
+    console.log('ACCOUNT_DTO: ', accountDto);
     await this.accountRepo.save({ ...accountDto, password: hashPassword });
     return accountDto;
   }

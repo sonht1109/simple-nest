@@ -12,6 +12,8 @@ export class Food {
   @Column('float', { default: 0, unsigned: true })
   minAge: number;
 
-  @ManyToMany(() => Cat, (cat) => cat.foods, {})
+  @ManyToMany(() => Cat, (cat) => cat.foods, {
+    onDelete: 'CASCADE',
+  })
   cats: Cat[];
 }
