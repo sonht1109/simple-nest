@@ -30,7 +30,9 @@ export class Cat {
   @ManyToOne(() => Account, (owner: Account) => owner.cats)
   owner: Account;
 
-  @ManyToMany(() => Food)
+  @ManyToMany(() => Food, (food) => food.cats, {
+    cascade: true,
+  })
   @JoinTable({ name: 'cat_food' })
   foods: Food[];
 }

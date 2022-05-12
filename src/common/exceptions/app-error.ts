@@ -1,7 +1,7 @@
 import { HttpException } from '@nestjs/common';
 
 export class AppError extends HttpException {
-  constructor(public code: string, public data?: Record<string, unknown>) {
-    super('AppError', null);
+  constructor(response: string | Record<string, any>, code: number) {
+    super(response, code);
   }
 }

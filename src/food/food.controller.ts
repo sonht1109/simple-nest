@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Roles } from 'src/common/decorators/role';
 import { EnumRole } from 'src/common/enum/role.enum';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
@@ -30,5 +38,12 @@ export class FoodController {
   @Get('by-min-age/:age')
   findByMinAge(@Param('age') age: string) {
     return this.foodService.findByMinAge(+age);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(EnumRole.ADMIN)
+  delete(@Param('id') id: string) {
+    return this.foodService.delete(+id);
   }
 }

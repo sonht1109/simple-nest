@@ -20,5 +20,5 @@ export class Account {
     onDelete: 'CASCADE',
     nullable: true,
   })
-  cats?: Cat[];
+  cats: Cat[];
 }

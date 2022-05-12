@@ -35,4 +35,10 @@ export class AuthController {
   findOne(@Param('id') id: string) {
     return this.authService.findOneById(+id);
   }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getMyAccount(@CurrentAccount() account: Account) {
+    return this.authService.findOneById(account.id);
+  }
 }

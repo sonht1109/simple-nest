@@ -14,7 +14,10 @@ import { Account } from './account.entity';
   imports: [
     TypeOrmModule.forFeature([Account, AccountRepository]),
     PassportModule,
-    JwtModule.register({ secret: SECRET_KEY }),
+    JwtModule.register({
+      secret: SECRET_KEY,
+      signOptions: { expiresIn: '60m' },
+    }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],

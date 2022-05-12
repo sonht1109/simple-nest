@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Cat } from 'src/cat/cat.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('food')
 export class Food {
@@ -10,4 +11,7 @@ export class Food {
 
   @Column('float', { default: 0, unsigned: true })
   minAge: number;
+
+  @ManyToMany(() => Cat, (cat) => cat.foods, {})
+  cats: Cat[];
 }

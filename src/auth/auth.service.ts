@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { AppError } from 'src/common/exceptions/app-error';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Account } from './account.entity';
 import { AccountRepository } from './account.repository';
 import { CreateAccountDto } from './dto/create-account';
@@ -28,7 +27,7 @@ export class AuthService {
         return account;
       }
     }
-    throw new AppError('Invalid account');
+    throw new UnauthorizedException();
   }
 
   async generateToken(payload: Account) {
@@ -53,7 +52,10 @@ export class AuthService {
   }
 
   async findOneById(id: number): Promise<Account> {
-    return await this.accountRepo.findOne({ where: { id } });
+    return await this.accountRepo.findOne({
+      where: { id },
+      relations: ['cats'],
+    });
   }
 
   async findAll() {

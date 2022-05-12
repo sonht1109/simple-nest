@@ -18,7 +18,7 @@ export class FoodService {
     if (isNaN(+id)) {
       throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
     }
-    return this.foodRepo.findOneBy({ id: +id });
+    return this.foodRepo.findOne({ where: { id: +id }, relations: ['cats'] });
   }
 
   async create(foodDto: CreateFoodDto) {
@@ -31,5 +31,18 @@ export class FoodService {
       .where('f.minAge >= :age', { age })
       .getMany();
     return foods;
+  }
+
+  async findByIds(ids: number[]) {
+    const foods = await this.foodRepo
+      .createQueryBuilder('f')
+      .where('f.id IN (:...ids)', { ids })
+      .getMany();
+
+    return foods;
+  }
+
+  async delete(id: number) {
+    return await this.foodRepo.delete(id);
   }
 }
