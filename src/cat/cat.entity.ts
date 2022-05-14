@@ -24,6 +24,9 @@ export class Cat {
   })
   gender: EnumCatGender;
 
+  @Column('varchar', { nullable: true })
+  image: string;
+
   @Column('float', { unsigned: true, default: 0 })
   age: number;
 

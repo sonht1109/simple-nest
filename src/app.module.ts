@@ -6,10 +6,14 @@ import { CatModule } from './cat/cat.module';
 import { FoodModule } from './food/food.module';
 import { AuthModule } from './auth/auth.module';
 import { ormConfig } from './orm.config';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(ormConfig),
+    MulterModule.register({
+      dest: './upload',
+    }),
     CatModule,
     FoodModule,
     AuthModule,

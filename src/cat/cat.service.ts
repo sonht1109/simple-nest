@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -14,6 +15,11 @@ import { CatRepository } from './cat.repository';
 import { Account } from 'src/auth/account.entity';
 import { FoodService } from 'src/food/food.service';
 import { Food } from 'src/food/food.entity';
+import {
+  isFileExists,
+  removeFileIfExists,
+  unlinkFile,
+} from 'src/common/util/fs.util';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CatsService {
@@ -107,5 +113,23 @@ export class CatsService {
     }
 
     throw new UnauthorizedException();
+  }
+
+  async updateImage(id: number, by: Account, file: Express.Multer.File) {
+    const currentCat = await this.findOne(id);
+    if (currentCat) {
+      if (currentCat.owner.id === by.id) {
+        await this.catRepo.save({ ...currentCat, image: file.path });
+        if (currentCat.image) {
+          await removeFileIfExists(currentCat.image);
+        }
+        return { ...currentCat, image: file.path };
+      } else {
+        await removeFileIfExists(file.path);
+        throw new UnauthorizedException();
+      }
+    }
+    await removeFileIfExists(file.path);
+    throw new BadRequestException('No cats found');
   }
 }

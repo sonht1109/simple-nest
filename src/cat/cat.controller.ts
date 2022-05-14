@@ -6,14 +6,19 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat';
 import { CatsService } from './cat.service';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { CurrentAccount } from 'src/common/decorators/current-user';
 import { Account } from 'src/auth/account.entity';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { imageFileConfigs } from 'src/common/configs/file-interceptor.config';
+import { UploadInterceptor } from 'src/common/interceptors/upload.interceptor';
 
 @ApiTags('Cat')
 @Controller('cats')
@@ -72,5 +77,29 @@ export class CatsController {
     @CurrentAccount() by: Account,
   ) {
     return await this.catsService.feed(+id, foods, by);
+  }
+
+  @Post('file/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @UseInterceptors(FileInterceptor('file', imageFileConfigs), UploadInterceptor)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string,
+    @CurrentAccount() by: Account,
+  ) {
+    return await this.catsService.updateImage(+id, by, file);
   }
 }
