@@ -7,6 +7,8 @@ import { FoodModule } from './food/food.module';
 import { AuthModule } from './auth/auth.module';
 import { ormConfig } from './orm.config';
 import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -14,6 +16,7 @@ import { MulterModule } from '@nestjs/platform-express';
     MulterModule.register({
       dest: './upload',
     }),
+    ServeStaticModule.forRoot({ rootPath: join(__dirname, '..', 'upload') }),
     CatModule,
     FoodModule,
     AuthModule,
