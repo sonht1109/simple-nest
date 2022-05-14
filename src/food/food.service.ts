@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateFoodDto } from './dto/create-food';
 import { Food } from './food.entity';
@@ -14,10 +14,7 @@ export class FoodService {
     return this.foodRepo.find();
   }
 
-  async findOne(id: string): Promise<Food> {
-    if (isNaN(+id)) {
-      throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
-    }
+  async findOne(id: number): Promise<Food> {
     return this.foodRepo.findOne({ where: { id: +id }, relations: ['cats'] });
   }
 

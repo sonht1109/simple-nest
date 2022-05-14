@@ -4,10 +4,11 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBasicAuth, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/role';
 import { EnumRole } from 'src/common/enums/role.enum';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
@@ -26,7 +27,7 @@ export class FoodController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.foodService.findOne(id);
   }
 
@@ -39,8 +40,8 @@ export class FoodController {
   }
 
   @Get('by-min-age/:age')
-  findByMinAge(@Param('age') age: string) {
-    return this.foodService.findByMinAge(+age);
+  findByMinAge(@Param('age', ParseIntPipe) age: number) {
+    return this.foodService.findByMinAge(age);
   }
 
   @Delete(':id')

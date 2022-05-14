@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   UploadedFile,
@@ -19,7 +20,6 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileConfigs } from 'src/common/configs/file-interceptor.config';
 import { UploadInterceptor } from 'src/common/interceptors/upload.interceptor';
-import { ParseToIntPipe } from 'src/common/pipes/parse-to-int.pipe';
 
 @ApiTags('Cat')
 @Controller('cats')
@@ -32,7 +32,7 @@ export class CatsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseToIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.catsService.findOne(id);
   }
 
@@ -50,7 +50,7 @@ export class CatsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async delete(
-    @Param('id', ParseToIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @CurrentAccount() by: Account,
   ) {
     return await this.catsService.delete(id, by);
@@ -76,7 +76,7 @@ export class CatsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async feed(
-    @Param('id', ParseToIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() { foods }: { foods: number[] },
     @CurrentAccount() by: Account,
   ) {
@@ -101,7 +101,7 @@ export class CatsController {
   })
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
-    @Param('id', ParseToIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @CurrentAccount() by: Account,
   ) {
     return await this.catsService.updateImage(id, by, file);

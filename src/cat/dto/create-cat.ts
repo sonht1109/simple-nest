@@ -4,7 +4,7 @@ import { EnumCatGender } from 'src/common/enums/cat-gender.enum';
 export class CreateCatDto {
   @ApiProperty()
   name: string;
-  @ApiProperty()
+  @ApiProperty({ enum: EnumCatGender, default: EnumCatGender.MALE })
   gender: EnumCatGender;
   @ApiProperty()
   age: number;

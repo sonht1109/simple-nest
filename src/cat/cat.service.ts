@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   Scope,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -52,7 +53,7 @@ export class CatsService {
     const currentCat = await this.findOne(id);
 
     if (!currentCat) {
-      return new AppError('NO CAT FOUND', 404);
+      throw new NotFoundException('No cats found');
     }
 
     const isOwner = currentCat.owner.id === by.id;
@@ -65,12 +66,9 @@ export class CatsService {
   async update(id: number, cat: CreateCatDto, by: Account): Promise<Cat> {
     const currentCat = await this.findOne(id);
     if (!currentCat) {
-      throw new AppError('NOT CAT FOUND', 404);
+      throw new NotFoundException('No cats found');
     }
     if (by && currentCat.owner.id === by.id) {
-      if (cat.gender && !Object.values(EnumCatGender).includes(cat.gender)) {
-        throw new AppError('Invalid gender', 400);
-      }
       return await this.catRepo.save({ ...currentCat, ...cat, id });
     }
     throw new UnauthorizedException();
@@ -97,7 +95,7 @@ export class CatsService {
         await this.catRepo.save(currentCat);
         return true;
       }
-      throw new AppError('There are some foods not suit the cat', 400);
+      throw new BadRequestException('There are some foods not suit the cat');
     }
 
     throw new UnauthorizedException();
