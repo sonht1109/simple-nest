@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentAccount } from 'src/common/decorators/current-user';
 import { Roles } from 'src/common/decorators/role';
-import { EnumRole } from 'src/common/enum/role.enum';
+import { EnumRole } from 'src/common/enums/role.enum';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/common/guard/local-auth.guard';
 import { RolesGuard } from 'src/common/guard/role.guard';
@@ -23,6 +32,7 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
+  @UsePipes(ValidationPipe)
   login(
     @Body() loginAccountDto: LoginAccountDto,
     @CurrentAccount() account: Account,

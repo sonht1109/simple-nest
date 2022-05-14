@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBasicAuth, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/role';
-import { EnumRole } from 'src/common/enum/role.enum';
+import { EnumRole } from 'src/common/enums/role.enum';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guard/role.guard';
 import { CreateFoodDto } from './dto/create-food';

@@ -1,5 +1,5 @@
 import { Account } from 'src/auth/account.entity';
-import { EnumCatGender } from 'src/common/enum/cat.gender';
+import { EnumCatGender } from 'src/common/enums/cat-gender.enum';
 import { Food } from 'src/food/food.entity';
 import {
   Entity,

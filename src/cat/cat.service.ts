@@ -1,13 +1,10 @@
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
   Scope,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EnumCatGender } from 'src/common/enum/cat.gender';
 import { AppError } from 'src/common/exceptions/app-error';
 import { CreateCatDto } from './dto/create-cat';
 import { Cat } from './cat.entity';
@@ -15,11 +12,8 @@ import { CatRepository } from './cat.repository';
 import { Account } from 'src/auth/account.entity';
 import { FoodService } from 'src/food/food.service';
 import { Food } from 'src/food/food.entity';
-import {
-  isFileExists,
-  removeFileIfExists,
-  unlinkFile,
-} from 'src/common/util/fs.util';
+import { removeFileIfExists } from 'src/common/util/fs.util';
+import { EnumCatGender } from 'src/common/enums/cat-gender.enum';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CatsService {
@@ -32,12 +26,9 @@ export class CatsService {
     return this.catRepo.find();
   }
 
-  async findOne(id: string | number): Promise<Cat> {
-    if (isNaN(+id)) {
-      throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
-    }
+  async findOne(id: number): Promise<Cat> {
     return await this.catRepo.findOne({
-      where: { id: +id },
+      where: { id },
       relations: ['owner', 'foods'],
     });
   }
@@ -57,11 +48,8 @@ export class CatsService {
     throw new UnauthorizedException();
   }
 
-  async delete(id: string, by: Account): Promise<any> {
-    if (isNaN(+id)) {
-      throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
-    }
-    const currentCat = await this.findOne(+id);
+  async delete(id: number, by: Account): Promise<any> {
+    const currentCat = await this.findOne(id);
 
     if (!currentCat) {
       return new AppError('NO CAT FOUND', 404);
@@ -69,7 +57,7 @@ export class CatsService {
 
     const isOwner = currentCat.owner.id === by.id;
     if (isOwner) {
-      return await this.catRepo.delete({ id: +id });
+      return await this.catRepo.delete({ id });
     }
     throw new UnauthorizedException();
   }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EnumCatGender } from 'src/common/enum/cat.gender';
+import { EnumCatGender } from 'src/common/enums/cat-gender.enum';
 
 export class CreateCatDto {
   @ApiProperty()
