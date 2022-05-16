@@ -9,6 +9,8 @@ import { ormConfig } from './orm.config';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { WsModule } from './websocket/websocket.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { join } from 'path';
     CatModule,
     FoodModule,
     AuthModule,
+    WsModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
