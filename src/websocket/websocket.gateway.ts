@@ -11,6 +11,8 @@ import { SECRET_KEY } from 'src/orm.config';
 import { AuthPayload } from 'src/auth/interface/auth-payload.interface';
 import { AuthService } from 'src/auth/auth.service';
 import { SocketWithAccount } from './interface/socket.interface';
+import { UseGuards } from '@nestjs/common';
+import { WsAuthGuard } from 'src/common/guard/ws-auth.guard';
 
 export const socketIdToAccountId: Record<string, number> = {};
 export const accountIdToSocketId: Record<number, string> = {};
@@ -28,7 +30,7 @@ export class WsGateway
         if (currentAccount) {
           return next();
         }
-        const token = socket.handshake.headers?.authorization?.split(' ')[1];
+        const token = socket.handshake?.headers?.authorization?.split(' ')[1];
         if (!token) {
           return next();
         }
@@ -64,6 +66,7 @@ export class WsGateway
     }
   }
 
+  @UseGuards(WsAuthGuard)
   @SubscribeMessage('me')
   async onMe(socket: SocketWithAccount) {
     socket.emit('me', socket.account);

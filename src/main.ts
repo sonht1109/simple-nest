@@ -22,7 +22,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors({ credentials: true });
-  // app.use(bodyParser({ extended: true }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
