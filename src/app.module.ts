@@ -11,6 +11,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { WsModule } from './websocket/websocket.module';
 import { MessageModule } from './message/message.module';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MessageModule } from './message/message.module';
     AuthModule,
     WsModule,
     MessageModule,
+    CronModule,
   ],
   controllers: [AppController],
   providers: [AppService],

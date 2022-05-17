@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Cat } from 'src/cat/cat.entity';
 import { EnumRole } from 'src/common/enums/role.enum';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -10,6 +11,7 @@ export class Account {
   @Column('varchar', { unique: true })
   username: string;
 
+  @Exclude()
   @Column('varchar')
   password: string;
 
