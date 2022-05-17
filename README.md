@@ -2,7 +2,7 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-![pipeline](https://github.com/sonht1109/simple-nest/blob/master/upload/pipeline.jpg)
+![pipeline](https://github.com/sonht1109/simple-nest/blob/master/public/pipeline.jpg)
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
