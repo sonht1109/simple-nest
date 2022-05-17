@@ -8,6 +8,8 @@ import * as express from 'express';
 const PORT = 3000;
 const SOCKET_PORT = 3006;
 
+// Middleware -> Interceptors -> Route Handler -> Interceptors -> Exception Filter
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
