@@ -23,23 +23,26 @@ export class WsGateway
 
   afterInit(server: Server) {
     server.use(async (socket: SocketWithAccount, next: (err?: any) => void) => {
-      const currentAccount = socket.account;
-      if (currentAccount) {
+      try {
+        const currentAccount = socket.account;
+        if (currentAccount) {
+          return next();
+        }
+        const token = socket.handshake.headers?.authorization?.split(' ')[1];
+        if (!token) {
+          return next();
+        }
+        const payload = jwt.verify(token, SECRET_KEY) as AuthPayload;
+        if (!payload.id) {
+          return next();
+        }
+        const account = await this.authService.findOneById(payload.id);
+        if (account) {
+          socket.account = account;
+        }
+      } finally {
         return next();
       }
-      const token = socket.handshake.headers?.authorization?.split(' ')[1];
-      if (!token) {
-        return next();
-      }
-      const payload = jwt.verify(token, SECRET_KEY) as AuthPayload;
-      if (!payload.id) {
-        return next();
-      }
-      const account = await this.authService.findOneById(payload.id);
-      if (account) {
-        socket.account = account;
-      }
-      return next();
     });
   }
 
@@ -55,9 +58,10 @@ export class WsGateway
   handleDisconnect(socket: SocketWithAccount) {
     if (!socket.account) {
       console.log('Unauthorize');
+    } else {
+      delete socketIdToAccountId[socket.id];
+      delete accountIdToSocketId[socket.account.id];
     }
-    delete socketIdToAccountId[socket.id];
-    delete accountIdToSocketId[socket.account.id];
   }
 
   @SubscribeMessage('me')

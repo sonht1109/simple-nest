@@ -6,6 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { SocketWithAccount } from 'src/websocket/interface/socket.interface';
+import { accountIdToSocketId } from 'src/websocket/websocket.gateway';
 
 @WebSocketGateway(3006, { cors: true })
 @Injectable()
@@ -17,6 +18,8 @@ export class MessageWs {
     socket: SocketWithAccount,
     payload: { to: number; message: string },
   ) {
-    socket.emit('reply_message', `From ${payload.to}: ${payload.message}`);
+    socket
+      .to(accountIdToSocketId[payload.to])
+      .emit('reply_message', `From ${socket.account.id}: ${payload.message}`);
   }
 }
