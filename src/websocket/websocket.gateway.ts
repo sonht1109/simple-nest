@@ -7,12 +7,12 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import * as jwt from 'jsonwebtoken';
-import { SECRET_KEY } from 'src/orm.config';
 import { AuthPayload } from 'src/auth/interface/auth-payload.interface';
 import { AuthService } from 'src/auth/auth.service';
 import { SocketWithAccount } from './interface/socket.interface';
 import { UseGuards } from '@nestjs/common';
 import { WsAuthGuard } from 'src/common/guard/ws-auth.guard';
+import { ConfigService } from '@nestjs/config';
 
 export const socketIdToAccountId: Record<string, number> = {};
 export const accountIdToSocketId: Record<number, string> = {};
@@ -21,7 +21,10 @@ export const accountIdToSocketId: Record<number, string> = {};
 export class WsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private configService: ConfigService,
+  ) {}
 
   afterInit(server: Server) {
     server.use(async (socket: SocketWithAccount, next: (err?: any) => void) => {
@@ -34,7 +37,10 @@ export class WsGateway
         if (!token) {
           return next();
         }
-        const payload = jwt.verify(token, SECRET_KEY) as AuthPayload;
+        const payload = jwt.verify(
+          token,
+          this.configService.get<string>('SECRET_KEY'),
+        ) as AuthPayload;
         if (!payload.id) {
           return next();
         }

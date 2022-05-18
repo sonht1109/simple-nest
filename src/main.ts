@@ -1,9 +1,10 @@
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as express from 'express';
-// import { SocketIoAdapter } from './websocket/io-adapter';
+import { SocketIoAdapter } from './websocket/io-adapter';
+import { ConfigService } from '@nestjs/config';
 
 const PORT = 3000;
 const SOCKET_PORT = 3006;
@@ -27,7 +28,13 @@ async function bootstrap() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // app.use(new SocketIoAdapter(app));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
+
+  app.useWebSocketAdapter(new SocketIoAdapter(app, app.get(ConfigService)));
 
   await app.listen(PORT);
   Logger.warn(`Listening at http://localhost:${PORT}`);

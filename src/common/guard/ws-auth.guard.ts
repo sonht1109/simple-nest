@@ -1,13 +1,16 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { SocketWithAccount } from 'src/websocket/interface/socket.interface';
 import * as jwt from 'jsonwebtoken';
-import { SECRET_KEY } from 'src/orm.config';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthPayload } from 'src/auth/interface/auth-payload.interface';
 import { WsException } from '@nestjs/websockets';
+import { ConfigService } from '@nestjs/config';
 
 export class WsAuthGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private configService: ConfigService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
@@ -17,7 +20,10 @@ export class WsAuthGuard implements CanActivate {
       }
       const token = socket.handshake?.headers?.authorization.split(' ')[1];
       if (!token) return false;
-      const payload = jwt.verify(token, SECRET_KEY) as AuthPayload;
+      const payload = jwt.verify(
+        token,
+        this.configService.get<string>('SECRET_KEY'),
+      ) as AuthPayload;
       if (!payload.id) {
         return false;
       }
