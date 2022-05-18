@@ -17,7 +17,7 @@ import { ConfigService } from '@nestjs/config';
 export const socketIdToAccountId: Record<string, number> = {};
 export const accountIdToSocketId: Record<number, string> = {};
 
-@WebSocketGateway(3006, { cors: true })
+@WebSocketGateway()
 export class WsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {

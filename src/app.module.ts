@@ -13,6 +13,8 @@ import { MessageModule } from './message/message.module';
 import { CronModule } from './cron/cron.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ormConfig } from './common/configs/orm.config';
+import { JobModule } from './job/job.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -26,12 +28,14 @@ import { ormConfig } from './common/configs/orm.config';
       inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({ rootPath: join(__dirname, '..', 'upload') }),
+    BullModule.forRoot({}),
     CatModule,
     FoodModule,
     AuthModule,
     WsModule,
     MessageModule,
     CronModule,
+    JobModule,
   ],
   controllers: [AppController],
   providers: [AppService],
