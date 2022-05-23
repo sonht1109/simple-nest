@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -20,6 +22,10 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileConfigs } from 'src/common/configs/file-interceptor.config';
 import { UploadInterceptor } from 'src/common/interceptors/upload.interceptor';
+import * as xlsx from 'xlsx';
+import { join } from 'path';
+import { Response } from 'express';
+import { createReadStream } from 'fs';
 
 @ApiTags('Cat')
 @Controller('cats')
@@ -29,6 +35,27 @@ export class CatsController {
   @Get()
   findAll() {
     return this.catsService.findAll();
+  }
+
+  @Get('excel')
+  async exportExcel(@Res() res: Response) {
+    const path = join(process.cwd(), 'excels');
+    const filename = 'excel.xlsx';
+    const fullPath = join(path, filename);
+
+    const data = await this.findAll();
+    const workSheet = xlsx.utils.json_to_sheet(data);
+    const workBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(workBook, workSheet, 'data');
+    xlsx.write(workBook, { bookType: 'xlsx', type: 'buffer' });
+    xlsx.writeFile(workBook, fullPath);
+
+    const file = createReadStream(fullPath);
+    res.set({
+      'Content-type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    file.pipe(res);
   }
 
   @Get(':id')

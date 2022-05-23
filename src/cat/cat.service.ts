@@ -24,7 +24,7 @@ export class CatsService {
   ) {}
 
   async findAll() {
-    return this.catRepo.find();
+    return await this.catRepo.find();
   }
 
   async findOne(id: number): Promise<Cat> {

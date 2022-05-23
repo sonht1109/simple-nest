@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, Interval } from '@nestjs/schedule';
+import { join } from 'path';
+import { removeAllFilesInFolder } from 'src/common/util/fs.util';
 
 @Injectable()
 export class CronService {
@@ -10,8 +12,8 @@ export class CronService {
     this.logger.debug('Called every 100 seconds');
   }
 
-  @Cron('*/100 * * * * *')
+  @Cron('*/10 * * * * *')
   handleCron() {
-    this.logger.debug('Demo cron run every 100s');
+    removeAllFilesInFolder(join(process.cwd(), 'excels'));
   }
 }
