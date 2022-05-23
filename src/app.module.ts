@@ -13,7 +13,6 @@ import { MessageModule } from './message/message.module';
 import { CronModule } from './cron/cron.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ormConfig } from './common/configs/orm.config';
-import { JobModule } from './job/job.module';
 import { BullModule } from '@nestjs/bull';
 
 @Module({
@@ -28,14 +27,22 @@ import { BullModule } from '@nestjs/bull';
       inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({ rootPath: join(__dirname, '..', 'upload') }),
-    BullModule.forRoot({}),
     CatModule,
     FoodModule,
     AuthModule,
     WsModule,
     MessageModule,
     CronModule,
-    JobModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get<string>('REDIS_HOST'),
+          port: configService.get<number>('REDIS_PORT'),
+        },
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

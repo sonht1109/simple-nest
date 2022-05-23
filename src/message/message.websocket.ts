@@ -28,9 +28,9 @@ export class MessageWs {
       .to(accountIdToSocketId[payload.to])
       .emit('reply_message', `From ${socket.account.id}: ${payload.message}`);
 
-    await this.notiQueue.add(
-      'receive-message',
-      `From ${socket.account.id}: ${payload.message}`,
-    );
+    await this.notiQueue.add('receive-message', {
+      from: socket.account.id,
+      ...payload,
+    });
   }
 }

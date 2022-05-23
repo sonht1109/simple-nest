@@ -1,17 +1,19 @@
-import { OnQueueActive, Process, Processor } from '@nestjs/bull';
+import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
+import { MessageWs } from 'src/message/message.websocket';
+import { accountIdToSocketId } from 'src/websocket/websocket.gateway';
 
 @Processor('notification')
 export class NotificationConsumer {
-  @Process('receive-message')
-  async handleNotification(job: Job<string>) {
-    console.log('JOB CONSUMTER', job.data);
-  }
+  constructor(private readonly messageWs: MessageWs) {}
 
-  @OnQueueActive()
-  onActive(job: Job) {
-    console.log(
-      `Processing job ${job.id} of type ${job.name} with data ${job.data}...`,
-    );
+  @Process('receive-message')
+  async handleNotification(
+    job: Job<{ from: number; to: number; message: string }>,
+  ) {
+    const { from, to } = job.data;
+    this.messageWs.server
+      .to(accountIdToSocketId[to])
+      .emit('notification', 'You get a message from ' + from);
   }
 }
