@@ -12,7 +12,7 @@ export class SocketIoAdapter extends IoAdapter {
 
   createIOServer(port: number, options?: any) {
     port = this.configService.get<number>('SOCKET_PORT');
-    const server = super.createIOServer(3006, { ...options, port, cors: true });
+    const server = super.createIOServer(port, { ...options, cors: true });
     return server;
   }
 }

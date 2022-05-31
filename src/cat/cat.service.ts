@@ -107,15 +107,15 @@ export class CatsService {
       if (currentCat.owner.id === by.id) {
         await this.catRepo.save({ ...currentCat, image: file.path });
         if (currentCat.image) {
-          await removeFileIfExists(currentCat.image);
+          removeFileIfExists(currentCat.image);
         }
         return { ...currentCat, image: file.path };
       } else {
-        await removeFileIfExists(file.path);
+        removeFileIfExists(file.path);
         throw new UnauthorizedException();
       }
     }
-    await removeFileIfExists(file.path);
+    removeFileIfExists(file.path);
     throw new BadRequestException('No cats found');
   }
 }

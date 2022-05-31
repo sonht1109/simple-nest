@@ -1,22 +1,14 @@
 import * as fs from 'fs';
 import { join } from 'path';
 
-export const isFileExists = (path: string): Promise<boolean> =>
-  new Promise((resolve) => {
-    fs.existsSync(path);
-    resolve(true);
-  });
+export const isFileExists = (path: string) => fs.existsSync(path);
 
-export const unlinkFile = (path: string) =>
-  new Promise((resolve) => {
-    fs.unlinkSync(path);
-    resolve(true);
-  });
+export const unlinkFile = (path: string) => fs.unlinkSync(path);
 
-export const removeFileIfExists = async (path: string) => {
-  const exists = await isFileExists(path);
+export const removeFileIfExists = (path: string) => {
+  const exists = isFileExists(path);
   if (exists) {
-    await unlinkFile(path);
+    unlinkFile(path);
   }
 };
 
