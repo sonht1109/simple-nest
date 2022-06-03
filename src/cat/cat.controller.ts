@@ -7,10 +7,12 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat';
 import { CatsService } from './cat.service';
@@ -25,6 +27,7 @@ import * as xlsx from 'xlsx';
 import { join } from 'path';
 import { Response } from 'express';
 import { createReadStream } from 'fs';
+import { PaginationParams } from 'src/common/dtos/pagination.dto';
 
 @ApiTags('Cat')
 @Controller('cats')
@@ -32,17 +35,23 @@ export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @Get()
-  findAll() {
-    return this.catsService.findAll();
+  findAll(
+    @Query(new ValidationPipe({ transform: true }))
+    pagination: PaginationParams,
+  ) {
+    return this.catsService.findAll(pagination);
   }
 
   @Get('excel')
-  async exportExcel(@Res() res: Response) {
+  async exportExcel(
+    @Res() res: Response,
+    @Query() pagination: PaginationParams,
+  ) {
     const path = join(process.cwd(), 'excels');
     const filename = 'excel.xlsx';
     const fullPath = join(path, filename);
 
-    const data = await this.findAll();
+    const [data] = await this.findAll(pagination);
     const workSheet = xlsx.utils.json_to_sheet(data);
     const workBook = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(workBook, workSheet, 'data');
