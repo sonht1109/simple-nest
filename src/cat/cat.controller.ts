@@ -28,6 +28,7 @@ import { join } from 'path';
 import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { PaginationParams } from 'src/common/dtos/pagination.dto';
+import { Cat } from './cat.entity';
 
 @ApiTags('Cat')
 @Controller('cats')
@@ -35,11 +36,11 @@ export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @Get()
-  findAll(
-    @Query(new ValidationPipe({ transform: true }))
+  async findAll(
+    @Query()
     pagination: PaginationParams,
   ) {
-    return this.catsService.findAll(pagination);
+    return await this.catsService.findAll(pagination);
   }
 
   @Get('excel')
@@ -51,8 +52,8 @@ export class CatsController {
     const filename = 'excel.xlsx';
     const fullPath = join(path, filename);
 
-    const [data] = await this.findAll(pagination);
-    const workSheet = xlsx.utils.json_to_sheet(data);
+    const { data } = await this.findAll(pagination);
+    const workSheet = xlsx.utils.json_to_sheet(data as Cat[]);
     const workBook = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(workBook, workSheet, 'data');
     xlsx.write(workBook, { bookType: 'xlsx', type: 'buffer' });

@@ -15,7 +15,11 @@ import { FoodService } from 'src/food/food.service';
 import { Food } from 'src/food/food.entity';
 import { removeFileIfExists } from 'src/common/util/fs.util';
 import { EnumCatGender } from 'src/common/enums/cat-gender.enum';
-import { PaginationParams } from 'src/common/dtos/pagination.dto';
+import {
+  PaginationMeta,
+  PaginationParams,
+} from 'src/common/dtos/pagination.dto';
+import { PaginatedCat } from './dto/cat-pagination.dto';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CatsService {
@@ -24,9 +28,17 @@ export class CatsService {
     private readonly foodService: FoodService,
   ) {}
 
-  async findAll(pagination: PaginationParams) {
+  async findAll(pagination: PaginationParams): Promise<PaginatedCat> {
     const catBuilder = this.catRepo.createQueryBuilder('cat');
-    return await catBuilder.paginate(pagination);
+    const [data, total] = await catBuilder
+      .skip(pagination.skip)
+      .take(pagination.take)
+      .getManyAndCount();
+
+    return new PaginatedCat(
+      data,
+      new PaginationMeta({ params: pagination, total }),
+    );
   }
 
   async findOne(id: number): Promise<Cat> {
